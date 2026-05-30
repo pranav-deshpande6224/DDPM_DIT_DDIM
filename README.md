@@ -4,89 +4,69 @@
 
 This project implements a complete latent diffusion pipeline for high-quality face generation using the CelebA-HQ dataset.
 
-Instead of performing diffusion directly on high-resolution images, a Vector Quantized Variational Autoencoder (VQVAE) is first trained to compress images into a discrete latent space. Diffusion models are then trained on these compact latent representations, significantly reducing computational requirements while maintaining image quality.
+Instead of performing diffusion directly on high-resolution images, a **Vector Quantized Variational Autoencoder (VQVAE)** is first trained to compress images into a discrete latent space. Diffusion models are then trained on these latent representations, significantly reducing computational requirements while maintaining image quality.
 
-The project explores three major components:
+### Models Implemented
 
-- VQVAE for latent representation learning
-- DDPM for diffusion-based image generation
-- DiT (Diffusion Transformer) for transformer-based diffusion
-- DDIM for accelerated sampling
-
----
-
-## Pipeline
-
-```text
-Input Image
-     │
-     ▼
-┌─────────────┐
-│   VQVAE     │
-│  Encoder    │
-└─────────────┘
-     │
-     ▼
-Latent Representation
-     │
-     ▼
-Vector Quantization
-     │
-     ▼
-Quantized Latent
-     │
-     ▼
- ┌───────────────┐
- │ DDPM / DiT    │
- │ Diffusion     │
- └───────────────┘
-     │
-     ▼
-Denoised Latent
-     │
-     ▼
-┌─────────────┐
-│   VQVAE     │
-│  Decoder    │
-└─────────────┘
-     │
-     ▼
-Generated Face
-```
+- VQVAE
+- DDPM (Denoising Diffusion Probabilistic Model)
+- DiT (Diffusion Transformer)
+- DDIM Sampling
 
 ---
 
-# Dataset
+## Dataset
 
-## CelebA-HQ
+### CelebA-HQ
 
-CelebA-HQ is a high-quality face dataset consisting of celebrity face images.
+- Resolution: 256 × 256
+- RGB Images
+- Human Face Dataset
 
 ### Preprocessing
 
 - Center Crop
 - Data Augmentation
-- Resize Images
+- Resize to 256 × 256
 - Convert to Tensor
-- Normalize Pixel Values to [-1,1]
+- Normalize to [-1,1]
 
-### Image Resolution
+---
+
+## Complete Pipeline
 
 ```text
-256 × 256 × 3
+Input Image
+      │
+      ▼
+VQVAE Encoder
+      │
+      ▼
+Latent Representation
+      │
+      ▼
+Vector Quantization
+      │
+      ▼
+Quantized Latent
+      │
+      ▼
+DDPM / DiT
+(Diffusion Model)
+      │
+      ▼
+Denoised Latent
+      │
+      ▼
+VQVAE Decoder
+      │
+      ▼
+Generated Face
 ```
 
 ---
 
-# Stage 1 : VQVAE
-
-## Motivation
-
-Traditional Variational Autoencoders compress images into continuous latent representations.
-
-VQVAE introduces a discrete latent space using a learnable codebook. Each encoder output vector is replaced by its nearest codebook vector, allowing the model to learn meaningful discrete representations.
-
----
+# Stage 1: VQVAE
 
 ## Architecture
 
@@ -97,13 +77,10 @@ Image
 Encoder
   │
   ▼
-Latent Feature Map
+Latent Features
   │
   ▼
-Vector Quantization
-  │
-  ▼
-Codebook Vector
+Codebook Quantization
   │
   ▼
 Decoder
@@ -112,161 +89,34 @@ Decoder
 Reconstructed Image
 ```
 
+### Key Components
+
+- Encoder
+- Codebook Vectors
+- Vector Quantization
+- Decoder
+- Straight Through Estimator
+- LPIPS Loss
+- PatchGAN Loss
+
 ---
 
-## Vector Quantization
+## VQVAE Loss
 
-The encoder produces a latent representation:
 $$
-\[
-z_e(x)
-\]
-$$
-
-For every latent vector, the nearest codebook embedding is selected using Euclidean distance.
-$$
-\[
-z_q(x)=argmin_j ||z_e(x)-e_j||
-\]
-$$
-where
-
-- $$\(e_j\)$$ is a codebook vector
-- $$\(z_q(x)\)$$ is the quantized latent representation
-
----
-
-## Reconstruction Loss
-
-The reconstructed image should be as close as possible to the original image.
-$$
-\[
-L_{rec}
-=
-||x-\hat{x}||^2
-\]
-$$
----
-
-## Codebook Loss
-
-Updates the codebook vectors.
-
-\[
-L_{codebook}
-=
-||sg[z_e(x)]-e||^2
-\]
-
-where
-
-\[
-sg(\cdot)
-\]
-
-denotes the stop-gradient operator.
-
----
-
-## Commitment Loss
-
-Encourages encoder outputs to stay close to selected codebook vectors.
-
-\[
-L_{commit}
-=
-||z_e(x)-sg[e]||^2
-\]
-
----
-
-## Straight Through Estimator
-
-Vector quantization is non-differentiable.
-
-To allow gradient flow through the encoder, a Straight Through Estimator (STE) is used.
-
-```python
-quantized =
-encoder_output +
-(quantized - encoder_output).detach()
-```
-
-This allows gradients to bypass the quantization operation.
-
----
-
-## LPIPS Perceptual Loss
-
-Pixel-wise losses often produce blurry reconstructions.
-
-To improve visual quality, LPIPS (Learned Perceptual Image Patch Similarity) is used.
-
-Both original and reconstructed images are passed through a pretrained network.
-
-\[
-d_l
-=
-||\phi_l(x)-\phi_l(\hat{x})||^2
-\]
-
-LPIPS:
-
-\[
-L_{LPIPS}
-=
-\sum_l w_l d_l
-\]
-
-where:
-
-- \(\phi_l\) = feature map at layer \(l\)
-- \(w_l\) = learned LPIPS weights
-
----
-
-## PatchGAN Adversarial Loss
-
-A PatchGAN discriminator is used to improve reconstruction realism.
-
-Instead of classifying the entire image, PatchGAN classifies local image patches.
-
-```text
-Image
- │
- ▼
-Conv
- │
- ▼
-Conv
- │
- ▼
-Conv
- │
- ▼
-Patch Predictions
-```
-
----
-
-## Final VQVAE Loss
-
-\[
 L =
 L_{rec}
 +
-\lambda_{cb}L_{codebook}
+L_{codebook}
 +
-\lambda_{commit}L_{commit}
+L_{commit}
 +
-\lambda_{LPIPS}L_{LPIPS}
+L_{LPIPS}
 +
-\lambda_{adv}L_{adv}
-\]
+L_{adv}
+$$
 
----
-
-## VQVAE Parameters
+### VQVAE Parameters
 
 | Parameter | Value |
 |------------|---------|
@@ -277,114 +127,55 @@ L_{rec}
 
 ---
 
-# Stage 2 : DDPM
+# Stage 2: DDPM
 
-## Motivation
-
-After learning compact latent representations, diffusion is performed inside latent space.
-
-This greatly reduces computational cost compared to pixel-space diffusion.
-
----
-
-## Forward Diffusion Process
+## Forward Diffusion
 
 Noise is gradually added to latent vectors.
 
-\[
+$$
 q(x_t|x_{t-1})
 =
-\mathcal N
+\mathcal{N}
 (
 \sqrt{\alpha_t}x_{t-1},
-\beta_tI
+\beta_t I
 )
-\]
-
-where
-
-\[
-\alpha_t = 1-\beta_t
-\]
+$$
 
 ---
 
-## Reparameterization Form
+## Reparameterization
 
-After repeatedly applying the forward process:
+The noisy latent at timestep t can be obtained directly using:
 
-\[
-x_t
-=
+$$
+x_t=
 \sqrt{\bar{\alpha}_t}x_0
 +
 \sqrt{1-\bar{\alpha}_t}\epsilon
-\]
+$$
 
 where
 
-\[
-\epsilon \sim \mathcal N(0,I)
-\]
-
-and
-
-\[
-\bar{\alpha}_t
-=
-\prod_{i=1}^{t}\alpha_i
-\]
-
----
-
-## Noise Schedule
-
-Linear schedule:
-
-\[
-\beta_1=10^{-4}
-\]
-
-\[
-\beta_T=2\times10^{-2}
-\]
-
-\[
-T=1000
-\]
-
----
-
-## Reverse Diffusion
-
-The diffusion model predicts the added noise.
-
-\[
-\epsilon_\theta(x_t,t)
-\]
-
-The model learns how to remove noise progressively.
+$$
+\epsilon \sim \mathcal{N}(0,I)
+$$
 
 ---
 
 ## Training Objective
 
-The DDPM loss becomes:
+The diffusion model predicts the added noise.
 
-\[
-L
-=
-E
-\left[
-||\epsilon-\epsilon_\theta(x_t,t)||^2
-\right]
-\]
+$$
+L=
+\left\|
+\epsilon-\epsilon_\theta(x_t,t)
+\right\|^2
+$$
 
-which is simply Mean Squared Error between actual and predicted noise.
-
----
-
-## DDPM Training Parameters
+### DDPM Parameters
 
 | Parameter | Value |
 |------------|---------|
@@ -395,48 +186,25 @@ which is simply Mean Squared Error between actual and predicted noise.
 
 ---
 
-# Stage 3 : Latent Diffusion Model
+# Stage 3: Latent Diffusion
 
-Instead of diffusing images:
+Instead of applying diffusion directly to images, diffusion is performed in the VQVAE latent space.
 
-```text
-Image
-  │
-  ▼
-VQVAE Encoder
-  │
-  ▼
-Latent Space
-  │
-  ▼
-Diffusion Process
-  │
-  ▼
-Latent Space
-  │
-  ▼
-VQVAE Decoder
-  │
-  ▼
-Generated Image
-```
-
-Benefits:
+### Advantages
 
 - Faster Training
-- Lower Memory Usage
+- Lower GPU Memory
+- Faster Sampling
 - Better Scalability
-- High Quality Generation
+- High Quality Image Generation
 
 ---
 
-# Stage 4 : Diffusion Transformer (DiT)
+# Stage 4: Diffusion Transformer (DiT)
 
-## Motivation
+Traditional diffusion models use U-Net for noise prediction.
 
-Traditional diffusion models use U-Net.
-
-DiT replaces the U-Net with a Transformer architecture for noise prediction.
+In this project, a Diffusion Transformer (DiT) is implemented to replace the U-Net.
 
 ---
 
@@ -444,200 +212,78 @@ DiT replaces the U-Net with a Transformer architecture for noise prediction.
 
 ```text
 Noisy Latent
-     │
-     ▼
+      │
+      ▼
 Patch Embedding
-     │
-     ▼
+      │
+      ▼
 Transformer Encoder Blocks
-     │
-     ▼
+      │
+      ▼
 Noise Prediction
 ```
 
----
+### Components
 
-## Components
-
-### Patch Embedding
-
-Latent representations are divided into patches and projected into embeddings.
-
-### Layer Normalization
-
-\[
-\hat{x}
-=
-\frac{x-\mu}
-{\sqrt{\sigma^2+\epsilon}}
-\]
+- Patch Embedding
+- Layer Normalization
+- Multi-Head Self Attention
+- Feed Forward Network
+- Adaptive LayerNorm Zero (AdaLN-Zero)
 
 ---
 
-## Multi Head Self Attention
+## Multi-Head Attention
 
-Given input:
-
-\[
-X
-\]
-
-Query, Key and Value projections:
-
-\[
-Q=XW_Q
-\]
-
-\[
-K=XW_K
-\]
-
-\[
-V=XW_V
-\]
-
-Attention:
-
-\[
+$$
 Attention(Q,K,V)
 =
 Softmax
 \left(
-\frac{QK^T}
-{\sqrt{d_k}}
+\frac{QK^T}{\sqrt{d_k}}
 \right)V
-\]
+$$
 
----
-
-## Adaptive LayerNorm Zero
-
-DiT uses Adaptive LayerNorm Zero (AdaLN-Zero) conditioning.
-
-Benefits:
-
-- Stable Training
-- Better Time-Step Conditioning
-- Improved Image Quality
-
----
-
-## DiT Parameters
+### DiT Parameters
 
 | Parameter | Value |
 |------------|---------|
-| Timesteps | 1000 |
-| Learning Rate | 1e-5 |
 | Hidden Size | 768 |
 | Transformer Layers | 12 |
 | Attention Heads | 12 |
 | Patch Size | 2 |
 | Batch Size | 128 |
+| Timesteps | 1000 |
 
 ---
 
-# Stage 5 : DDIM Sampling
+# Stage 5: DDIM Sampling
 
-## Motivation
-
-DDPM requires all 1000 reverse diffusion steps.
-
-DDIM accelerates generation using a deterministic sampling process.
+DDIM accelerates image generation by reducing the number of reverse diffusion steps.
 
 ---
 
 ## Predicted Clean Sample
 
-Using predicted noise:
-
-\[
-\hat{x}_0
-=
+$$
+\hat{x}_0=
 \frac{x_t-\sqrt{1-\bar{\alpha}_t}\hat{\epsilon}}
 {\sqrt{\bar{\alpha}_t}}
-\]
-
----
-
-## DDIM Variance
-
-\[
-\sigma_t
-=
-\eta
-\sqrt{
-\frac{1-\bar{\alpha}_{t-1}}
-{1-\bar{\alpha}_t}
-}
-\sqrt{
-1-
-\frac{\bar{\alpha}_t}
-{\bar{\alpha}_{t-1}}
-}
-\]
-
----
-
-## DDPM Direction Term
-
-\[
-d_t
-=
-\sqrt{
-1-\bar{\alpha}_{t-1}
--\sigma_t^2
-}
-\hat{\epsilon}
-\]
+$$
 
 ---
 
 ## DDIM Update Equation
 
-\[
+$$
 x_{t-1}
 =
-\sqrt{\bar{\alpha}_{t-1}}
-\hat{x}_0
+\sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
 +
-d_t
-+
-\sigma_t z
-\]
+\sqrt{1-\bar{\alpha}_{t-1}}\hat{\epsilon}
+$$
 
-where
-
-\[
-z\sim \mathcal N(0,I)
-\]
-
----
-
-## Deterministic DDIM
-
-For
-
-\[
-\eta = 0
-\]
-
-\[
-\sigma_t=0
-\]
-
-and the process becomes deterministic:
-
-\[
-x_{t-1}
-=
-\sqrt{\bar{\alpha}_{t-1}}
-\hat{x}_0
-+
-\sqrt{1-\bar{\alpha}_{t-1}}
-\hat{\epsilon}
-\]
-
-This significantly reduces inference time.
+Using DDIM significantly reduces inference time compared to DDPM while maintaining image quality.
 
 ---
 
@@ -647,15 +293,15 @@ This significantly reduces inference time.
 
 | Metric | Score |
 |----------|----------|
-| PSNR | Add Result |
-| SSIM | Add Result |
-| LPIPS | Add Result |
+| PSNR | Add Value |
+| SSIM | Add Value |
+| LPIPS | Add Value |
 
 ---
 
 ## Face Generation Comparison
 
-| Model | Image Quality | Sampling Speed |
+| Model | Quality | Sampling Speed |
 |---------|---------|---------|
 | DDPM | High | Slow |
 | DiT | Very High | Slow |
@@ -663,13 +309,23 @@ This significantly reduces inference time.
 
 ---
 
-# Future Improvements
+## Generated Samples
 
-- Class Conditional Generation
+Add generated images here.
+
+```markdown
+![Generated Face](results/generated_face.png)
+```
+
+---
+
+# Future Work
+
 - Text-to-Image Conditioning
-- Larger VQVAE Codebooks
-- Faster Sampling Schedulers
+- Class Conditional Generation
+- Larger Codebooks
 - Higher Resolution Face Synthesis
+- Faster Diffusion Schedulers
 
 ---
 
@@ -687,4 +343,4 @@ This significantly reduces inference time.
 
 **Pranav Deshpande**  
 IIT Jodhpur  
-Deep Learning | Generative AI | Diffusion Models
+Deep Learning • Generative AI • Diffusion Models
