@@ -117,34 +117,35 @@ Reconstructed Image
 ## Vector Quantization
 
 The encoder produces a latent representation:
-
+$$
 \[
 z_e(x)
 \]
+$$
 
 For every latent vector, the nearest codebook embedding is selected using Euclidean distance.
-
+$$
 \[
 z_q(x)=argmin_j ||z_e(x)-e_j||
 \]
-
+$$
 where
 
-- \(e_j\) is a codebook vector
-- \(z_q(x)\) is the quantized latent representation
+- $$\(e_j\)$$ is a codebook vector
+- $$\(z_q(x)\)$$ is the quantized latent representation
 
 ---
 
 ## Reconstruction Loss
 
 The reconstructed image should be as close as possible to the original image.
-
+$$
 \[
 L_{rec}
 =
 ||x-\hat{x}||^2
 \]
-
+$$
 ---
 
 ## Codebook Loss
