@@ -342,5 +342,7 @@ Compared to DDPM, DDIM can generate high-quality samples using significantly few
 ## Author
 
 **Pranav Deshpande**  
-IIT Jodhpur  
-Deep Learning • Generative AI • Diffusion Models
+* IIT Jodhpur  
+* Deep Learning
+* Generative AI
+* Diffusion Models
