@@ -237,7 +237,9 @@ Noise Prediction
 
 $$
 Attention(Q,K,V)
+$$
 =
+$$
 Softmax
 \left(
 \frac{QK^T}{\sqrt{d_k}}
