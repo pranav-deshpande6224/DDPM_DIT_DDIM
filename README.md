@@ -323,6 +323,9 @@ Compared to DDPM, DDIM can generate high-quality samples using significantly few
 
 ---
 
+# GPU
+1. A100 64GB RAM GPU used for this Projected Rented from JARVIS LABS GPU 
+
 # References
 
 1. VQ-VAE: Neural Discrete Representation Learning
