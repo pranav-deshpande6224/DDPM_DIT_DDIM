@@ -1,3 +1,19 @@
+## Trained Models .pth file
+
+All trained weights can be downloaded from:
+
+📦 **Google Drive Folder**
+
+https://drive.google.com/drive/folders/1qohVm6GusYvjR3un-2SJaqPV26RZU3jV?usp=drive_link
+
+Contents:
+
+- vqvae.pth
+- ddpm.pth
+- dit.pth
+
+
+
 # Face Generation using VQVAE, DDPM, DiT and DDIM
 
 ## Overview
