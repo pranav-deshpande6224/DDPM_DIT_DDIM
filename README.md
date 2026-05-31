@@ -274,7 +274,24 @@ $$
 ## DDIM Update Equation
 
 $$
+x_{t-1}
+=
+\sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
++
+\sqrt{1-\bar{\alpha}_{t-1}-\sigma_t^2}\,\hat{\epsilon}
++
+\sigma_t z
+$$
 
+where
+
+$$
+z \sim \mathcal{N}(0,I)
+$$
+
+For deterministic DDIM, η = 0 and σt = 0, reducing the update rule to:
+
+$$
 x_{t-1}
 =
 \sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
