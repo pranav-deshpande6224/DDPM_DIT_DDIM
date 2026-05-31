@@ -1,3 +1,23 @@
+## DDIM Sampling
+
+<p align="center">
+  <img src="ddim_faces_10_steps_1.gif" width="400"> 
+  <img src="ddim_faces_25_steps.gif" width="400"> 
+</p>
+
+## DIT Sampling
+
+<p align="center">
+  <img src="assets/dit_faces_256_8.gif" width="400"> 
+</p>
+
+## DDPM Sampling
+
+<p align="center">
+  <img src="assets/ldm_faces_256.gif" width="400">
+  <img src="assets/ldm_faces_256_2.gif" width="400">
+</p>
+
 ## 🚀 How to View the Project
 
 Because the main training notebook contains extensive code, GitHub's built-in preview may occasionally time out. You can view the full notebook instantly using the links below:
@@ -21,26 +41,6 @@ Contents:
 - vqvae.pth
 - ddpm.pth
 - dit.pth
-  
-## DDIM Sampling
-
-<p align="center">
-  <img src="ddim_faces_10_steps_1.gif" width="400"> 
-  <img src="ddim_faces_25_steps.gif" width="400"> 
-</p>
-
-## DIT Sampling
-
-<p align="center">
-  <img src="assets/dit_faces_256_8.gif" width="400"> 
-</p>
-
-## DDPM Sampling
-
-<p align="center">
-  <img src="assets/ldm_faces_256.gif" width="400">
-  <img src="assets/ldm_faces_256_2.gif" width="400">
-</p>
 
 
 
