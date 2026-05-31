@@ -273,7 +273,6 @@ $$
 
 ## DDIM Update Equation
 
-
 $$
 x_{t-1}
 =
