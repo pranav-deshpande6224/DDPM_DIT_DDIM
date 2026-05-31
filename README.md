@@ -289,7 +289,7 @@ $$
 z \sim \mathcal{N}(0,I)
 $$
 
-For deterministic DDIM, η = 0 and σt = 0, reducing the update rule to:
+For deterministic DDIM ($\eta = 0$), $\sigma_t = 0$, reducing the update rule to:
 
 $$
 x_{t-1}
@@ -310,26 +310,6 @@ Using DDIM significantly reduces inference time compared to DDPM while maintaini
 | DDPM | High | Slow |
 | DiT | Very High | Slow |
 | DDIM | High | Fast |
-
----
-
-## Generated Samples
-
-Add generated images here.
-
-```markdown
-![Generated Face](results/generated_face.png)
-```
-
----
-
-# Future Work
-
-- Text-to-Image Conditioning
-- Class Conditional Generation
-- Larger Codebooks
-- Higher Resolution Face Synthesis
-- Faster Diffusion Schedulers
 
 ---
 
