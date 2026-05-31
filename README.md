@@ -134,8 +134,7 @@ $$
 Noise is gradually added to latent vectors.
 
 $$
-q(x_t|x_{t-1})
-=
+q(x_t|x_{t-1}) = 
 \mathcal{N}
 (
 \sqrt{\alpha_t}x_{t-1},
