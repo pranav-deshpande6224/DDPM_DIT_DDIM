@@ -11,6 +11,13 @@ Contents:
 - vqvae.pth
 - ddpm.pth
 - dit.pth
+  
+## DDIM Sampling
+
+<p align="center">
+  <img src="assets/ddim_faces_10_steps_1.gif" width="400"> 
+  <img src="assets/ddim_faces_25_steps.gif" width="400"> 
+</p>
 
 ## DIT Sampling
 
