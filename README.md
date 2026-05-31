@@ -274,6 +274,7 @@ $$
 ## DDIM Update Equation
 
 $$
+
 x_{t-1}
 =
 \sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
@@ -282,18 +283,6 @@ x_{t-1}
 $$
 
 Using DDIM significantly reduces inference time compared to DDPM while maintaining image quality.
-
----
-
-# Results
-
-## Reconstruction Results
-
-| Metric | Score |
-|----------|----------|
-| PSNR | Add Value |
-| SSIM | Add Value |
-| LPIPS | Add Value |
 
 ---
 
@@ -334,7 +323,6 @@ Add generated images here.
 3. Diffusion Models Beat GANs on Image Synthesis
 4. High-Resolution Image Synthesis with Latent Diffusion Models
 5. Scalable Diffusion Models with Transformers
-
 ---
 
 ## Author
