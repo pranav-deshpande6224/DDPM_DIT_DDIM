@@ -1,3 +1,9 @@
+## 🚀 How to View the Project
+
+Because the main training notebook contains extensive code, GitHub's built-in preview may occasionally time out. You can view the full notebook instantly using the links below:
+
+* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1I4waXYhEhHvk1K15SE5hvhEUqvQ3HW_y/view?usp=drive_link)
+
 ## DDIM Sampling
 
 <p align="center">
@@ -17,12 +23,6 @@
   <img src="assets/ldm_faces_256.gif" width="400">
   <img src="assets/ldm_faces_256_2.gif" width="400">
 </p>
-
-## 🚀 How to View the Project
-
-Because the main training notebook contains extensive code, GitHub's built-in preview may occasionally time out. You can view the full notebook instantly using the links below:
-
-* [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1I4waXYhEhHvk1K15SE5hvhEUqvQ3HW_y/view?usp=drive_link)
 
 # HAND WRITTEN REPORT LINK
 
