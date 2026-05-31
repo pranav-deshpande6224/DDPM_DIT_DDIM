@@ -4,6 +4,10 @@ Because the main training notebook contains extensive code, GitHub's built-in pr
 
 * [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1I4waXYhEhHvk1K15SE5hvhEUqvQ3HW_y/view?usp=drive_link)
 
+# HAND WRITTEN REPORT LINK
+
+https://drive.google.com/file/d/1yb660tdWDNsm3oOPgDmof1oqA0xPZOGj/view?usp=drive_link
+
 ## Trained Models .pth file
 
 All trained weights can be downloaded from:
