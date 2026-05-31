@@ -12,6 +12,13 @@ Contents:
 - ddpm.pth
 - dit.pth
 
+## DDPM Sampling
+
+<p align="center">
+  <img src="assets/ldm_faces_256.gif" width="400">
+  <img src="assets/ldm_faces_256_2.gif" width="400">
+</p>
+
 
 
 # Face Generation using VQVAE, DDPM, DiT and DDIM
