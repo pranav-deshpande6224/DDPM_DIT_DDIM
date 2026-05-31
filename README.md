@@ -12,6 +12,12 @@ Contents:
 - ddpm.pth
 - dit.pth
 
+## DIT Sampling
+
+<p align="center">
+  <img src="assets/dit_faces_256_8.gif" width="400"> 
+</p>
+
 ## DDPM Sampling
 
 <p align="center">
