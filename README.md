@@ -235,10 +235,7 @@ Noise Prediction
 ## Multi-Head Attention
 
 $$
-Attention(Q,K,V)
-$$
-=
-$$
+Attention(Q,K,V) = 
 Softmax
 \left(
 \frac{QK^T}{\sqrt{d_k}}
@@ -275,6 +272,7 @@ $$
 ---
 
 ## DDIM Update Equation
+
 
 $$
 x_{t-1}
