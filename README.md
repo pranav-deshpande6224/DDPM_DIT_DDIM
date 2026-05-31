@@ -255,51 +255,19 @@ $$
 
 ---
 
-# Stage 5: DDIM Sampling
+## DDIM Sampling
 
-DDIM accelerates image generation by reducing the number of reverse diffusion steps.
+DDIM accelerates image generation by reducing the number of reverse diffusion steps while maintaining image quality.
 
----
+### Predicted Clean Sample
 
-## Predicted Clean Sample
+$$\hat{x}_0=\frac{x_t-\sqrt{1-\bar{\alpha}_t}\hat{\epsilon}}{\sqrt{\bar{\alpha}_t}}$$
 
-$$
-\hat{x}_0=
-\frac{x_t-\sqrt{1-\bar{\alpha}_t}\hat{\epsilon}}
-{\sqrt{\bar{\alpha}_t}}
-$$
+### Deterministic DDIM Update
 
----
+$$x_{t-1}=\sqrt{\bar{\alpha}_{t-1}}\hat{x}_0+\sqrt{1-\bar{\alpha}_{t-1}}\hat{\epsilon}$$
 
-## DDIM Update Equation
-
-$$
-x_{t-1}
-=
-\sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
-+
-\sqrt{1-\bar{\alpha}_{t-1}-\sigma_t^2}\,\hat{\epsilon}
-+
-\sigma_t z
-$$
-
-where
-
-$$
-z \sim \mathcal{N}(0,I)
-$$
-
-For deterministic DDIM ($\eta = 0$), $\sigma_t = 0$, reducing the update rule to:
-
-$$
-x_{t-1}
-=
-\sqrt{\bar{\alpha}_{t-1}}\hat{x}_0
-+
-\sqrt{1-\bar{\alpha}_{t-1}}\hat{\epsilon}
-$$
-
-Using DDIM significantly reduces inference time compared to DDPM while maintaining image quality.
+Compared to DDPM, DDIM can generate high-quality samples using significantly fewer sampling steps, resulting in much faster inference.
 
 ---
 
